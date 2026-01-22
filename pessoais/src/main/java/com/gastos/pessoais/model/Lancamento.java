@@ -1,21 +1,27 @@
 package com.gastos.pessoais.model;
 
 import jakarta.persistence.*;
-import lombok.Data;
+import lombok.*;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.Month;
 
 @Entity
 @Table(name = "lancamentos")
-@Data
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class Lancamento {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @EqualsAndHashCode.Include
     private Long id;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "categoria_id")
+    @ToString.Exclude
     private CategoriaGasto categoria;
 
     @Column(nullable = false)
@@ -35,4 +41,13 @@ public class Lancamento {
     private Month mes;
 
     private int ano;
+
+    @PrePersist
+    @PreUpdate
+    private void sincronizarMesAno() {
+        if (this.data != null) {
+            this.mes = this.data.getMonth();
+            this.ano = this.data.getYear();
+        }
+    }
 }

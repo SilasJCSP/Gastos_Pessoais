@@ -40,9 +40,7 @@ public class LancamentoService {
         lancamento.setValor(request.getValor());
         lancamento.setTipo(request.getTipo());
         
-        // Define mês e ano com base na data
-        lancamento.setMes(request.getData().getMonth());
-        lancamento.setAno(request.getData().getYear());
+        // Mês e ano serão sincronizados automaticamente via @PrePersist
         
         return new LancamentoResponse(lancamentoRepository.save(lancamento));
     }
@@ -70,9 +68,7 @@ public class LancamentoService {
         lancamento.setValor(request.getValor());
         lancamento.setTipo(request.getTipo());
         
-        // Atualiza mês e ano com base na data
-        lancamento.setMes(request.getData().getMonth());
-        lancamento.setAno(request.getData().getYear());
+        // Mês e ano serão sincronizados automaticamente via @PreUpdate
         
         return new LancamentoResponse(lancamentoRepository.save(lancamento));
     }

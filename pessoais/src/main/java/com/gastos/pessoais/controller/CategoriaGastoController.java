@@ -1,15 +1,17 @@
 package com.gastos.pessoais.controller;
 
+import com.gastos.pessoais.dto.CategoriaGastoMapper;
+import com.gastos.pessoais.dto.CategoriaGastoRequest;
+import com.gastos.pessoais.dto.CategoriaGastoResponse;
 import com.gastos.pessoais.model.CategoriaGasto;
 import com.gastos.pessoais.service.CategoriaGastoService;
 import com.gastos.pessoais.service.ExportService;
-//import jakarta.validation.Valid;
+import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.ByteArrayInputStream;
@@ -34,28 +36,35 @@ public class CategoriaGastoController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public CategoriaGasto criar(@Validated @RequestBody CategoriaGasto categoria) {
-        return categoriaGastoService.criar(categoria);
+    public CategoriaGastoResponse criar(@Valid @RequestBody CategoriaGastoRequest request) {
+        CategoriaGasto categoria = CategoriaGastoMapper.toEntity(request);
+        CategoriaGasto categoriaSalva = categoriaGastoService.criar(categoria);
+        return CategoriaGastoMapper.toResponse(categoriaSalva);
     }
 
     @GetMapping
-    public ResponseEntity<Page<CategoriaGasto>> listar(
+    public ResponseEntity<Page<CategoriaGastoResponse>> listar(
             @PageableDefault(size = 10, sort = {"nome"}) Pageable pageable
     ) {
-        return ResponseEntity.ok(categoriaGastoService.listar(pageable));
+        Page<CategoriaGasto> categorias = categoriaGastoService.listar(pageable);
+        Page<CategoriaGastoResponse> categoriasResponse = categorias.map(CategoriaGastoMapper::toResponse);
+        return ResponseEntity.ok(categoriasResponse);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<CategoriaGasto> buscarPorId(@PathVariable Long id) {
-        return ResponseEntity.ok(categoriaGastoService.buscarPorId(id));
+    public ResponseEntity<CategoriaGastoResponse> buscarPorId(@PathVariable Long id) {
+        CategoriaGasto categoria = categoriaGastoService.buscarPorId(id);
+        return ResponseEntity.ok(CategoriaGastoMapper.toResponse(categoria));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<CategoriaGasto> atualizar(
+    public ResponseEntity<CategoriaGastoResponse> atualizar(
             @PathVariable Long id, 
-            @Validated @RequestBody CategoriaGasto categoriaAtualizada
+            @Valid @RequestBody CategoriaGastoRequest request
     ) {
-        return ResponseEntity.ok(categoriaGastoService.atualizar(id, categoriaAtualizada));
+        CategoriaGasto categoriaAtualizada = CategoriaGastoMapper.toEntity(request);
+        CategoriaGasto categoriaSalva = categoriaGastoService.atualizar(id, categoriaAtualizada);
+        return ResponseEntity.ok(CategoriaGastoMapper.toResponse(categoriaSalva));
     }
 
     @DeleteMapping("/{id}")

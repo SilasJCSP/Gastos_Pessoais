@@ -13,6 +13,7 @@ import java.time.Month;
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
+@ToString
 public class Lancamento {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -44,7 +45,7 @@ public class Lancamento {
 
     @PrePersist
     @PreUpdate
-    private void sincronizarMesAno() {
+    private void preencherMesEAno() {
         if (this.data != null) {
             this.mes = this.data.getMonth();
             this.ano = this.data.getYear();

@@ -119,3 +119,7 @@ GET /api/lancamentos/resumo/mes/10/2025
 ## Licença
 
 Este projeto está licenciado sob a licença MIT - veja o arquivo [LICENSE](LICENSE) para detalhes.
+
+## Nota sobre exportações
+
+O content-type para arquivos .xlsx foi ajustado para `application/vnd.openxmlformats-officedocument.spreadsheetml.sheet`. Para arquivos grandes, considere gerar por streaming ou salvar em storage temporário para evitar OOM.
